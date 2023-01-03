@@ -1,0 +1,19 @@
+<head>
+    <title>Home</title>
+</head>
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div style="float: right;">
+        {% if user.is_authenticated %}
+            <br><a href="{% url 'logout' %}">Logout</a>
+            <br><a href="{% url 'password_change' %}">Change password</a>
+        {% else %}
+            <br><a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+
+    <h3>Hello, {{ user.username|default:'Guest User' }}! </h3>
+{% endblock %}
