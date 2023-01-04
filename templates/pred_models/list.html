@@ -1,0 +1,31 @@
+<head>
+    <title>Pred Models List</title>
+</head>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Your Pred Models</h2>
+    {% if pred_models %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+            {% for pred_model in pred_models %}
+                <tr>
+                    <td><a href=" {%url 'pred_model_detail' pred_model.id %}">{{ pred_model.id }}</a></td>
+                    <td>{{ pred_model.name }}</td>
+                    <td>{{ pred_model.description }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% else %}
+        <p>You have no pred models</p>
+    {% endif %}
+
+    <br><a href="{% url 'pred_model_upload' %}">Upload Models</a>
+    <br><a href="{% url 'dashboard' %}">Back to dashboard</a>
+{% endblock %}

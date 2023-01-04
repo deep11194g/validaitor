@@ -1,1 +1,3 @@
-django-crispy-forms
+Django
+psycopg2
+psycopg2-binary
