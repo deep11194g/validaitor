@@ -132,3 +132,4 @@ EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

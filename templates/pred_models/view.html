@@ -10,7 +10,36 @@
         <ul>
             <li>Name: {{ pred_model.name }}</li>
             <li>Description: {{ pred_model.description }}</li>
+
         </ul>
+
+        {% if pred_model.confusion_matrix %}
+            <br><br>
+            <h4>Confusion Matrix</h4>
+            <img src="{{ pred_model.confusion_matrix.url }}" alt="cf">
+        {% endif %}
+
+        {% if pred_model.roc_plot %}
+            <br><br>
+            <h4>Confusion Matrix</h4>
+            <img src="{{ pred_model.roc_plot.url }}" alt="cf">
+        {% endif %}
+
+        {% if pred_model.prc_plot %}
+            <br><br>
+            <h4>Confusion Matrix</h4>
+            <img src="{{ pred_model.prc_plot.url }}" alt="cf">
+        {% endif %}
+
+        {% if pred_model.classification_report %}
+            <br><br>
+            <h4>Classification Report</h4>
+            <pre>{{ pred_model.classification_report }}</pre>
+        {% endif %}
+
+        {% if message %}
+            <h3><i>{{ message }}</i></h3>
+        {% endif %}
 
     {% else %}
         <p>Either model with ID: {{ pred_model_id }} doesnt exist or doesnt belong to you !!</p>

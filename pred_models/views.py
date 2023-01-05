@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 
 from pred_models.forms import PredModelForm
 from pred_models.models import PredModel
+from pred_models.metrics import generate
 
 
 @login_required(login_url='login')
@@ -48,5 +49,25 @@ def pred_model_detail(request, pred_model_id):
         {
             'pred_model': pred_model,
             'pred_model_id': pred_model_id
+        }
+    )
+
+
+@login_required(login_url='login')
+def generate_report(request, pred_model_id):
+    pred_model = PredModel.objects.get(pk=pred_model_id)
+    message = None
+    if pred_model.developer != request.user:
+        pred_model = None
+    try:
+        pred_model = generate(pred_model)
+    except ValueError:
+        message = 'Model train test failed'
+    return render(
+        request, 'pred_models/view.html',
+        {
+            'pred_model': pred_model,
+            'pred_model_id': pred_model_id,
+            'message': message
         }
     )
