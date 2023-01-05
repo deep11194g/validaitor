@@ -1,9 +1,11 @@
+import traceback
+
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 
 from pred_models.forms import PredModelForm
 from pred_models.models import PredModel
-from pred_models.metrics import generate
+from pred_models.analysis import PerformanceStatsAnalyser
 
 
 @login_required(login_url='login')
@@ -60,8 +62,13 @@ def generate_report(request, pred_model_id):
     if pred_model.developer != request.user:
         pred_model = None
     try:
-        pred_model = generate(pred_model)
-    except ValueError:
+        analyser = PerformanceStatsAnalyser(pred_model_obj=pred_model)
+        analyser.load()
+        analyser.performance()
+        pred_model = analyser.pred_model_obj
+    except Exception as e:
+        print(str(e))
+        print(traceback.format_exc())
         message = 'Model train test failed'
     return render(
         request, 'pred_models/view.html',

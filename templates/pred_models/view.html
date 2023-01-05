@@ -21,20 +21,32 @@
 
         {% if pred_model.roc_plot %}
             <br><br>
-            <h4>Confusion Matrix</h4>
-            <img src="{{ pred_model.roc_plot.url }}" alt="cf">
+            <h4>ROC Curve</h4>
+            <img src="{{ pred_model.roc_plot.url }}" alt="roc">
         {% endif %}
 
         {% if pred_model.prc_plot %}
             <br><br>
-            <h4>Confusion Matrix</h4>
-            <img src="{{ pred_model.prc_plot.url }}" alt="cf">
+            <h4>Precision Recall Curve</h4>
+            <img src="{{ pred_model.prc_plot.url }}" alt="prc">
         {% endif %}
 
         {% if pred_model.classification_report %}
             <br><br>
             <h4>Classification Report</h4>
             <pre>{{ pred_model.classification_report }}</pre>
+        {% endif %}
+
+        {% if pred_model.feature_importance_plot %}
+            <br><br>
+            <h4>Feature Importance Plot</h4>
+            <img src="{{ pred_model.feature_importance_plot.url }}" alt="fi">
+        {% endif %}
+
+        {% if pred_model.best_feature_box_plot %}
+            <br><br>
+            <h4>Best feature Boxplot (Descp. Stats)</h4>
+            <img src="{{ pred_model.best_feature_box_plot.url }}" alt="bp">
         {% endif %}
 
         {% if message %}
