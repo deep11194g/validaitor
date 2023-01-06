@@ -29,7 +29,7 @@
                     <td><a href=" {% url 'pred_model_detail' pred_model.id %}">{{ pred_model.id }}</a></td>
                     <td>{{ pred_model.name }}</td>
                     <td>{{ pred_model.description }}</td>
-                    <td><a href=" {% url 'generate_report' pred_model.id %}">Generate</a></td>
+                    <td><a href=" {% url 'generate_report' pred_model.id %}">(Re-)Generate</a></td>
                 </tr>
             {% endfor %}
         </table>

@@ -47,6 +47,7 @@
             <img src="{{ pred_model.best_feature_box_plot.url }}" alt="bp">
         {% endif %}
 
+        <br><a href="{% url 'download_report' pred_model.id %}">Download report</a>
 
     {% else %}
         <p>Either model with ID: {{ pred_model_id }} doesnt exist or doesnt belong to you !!</p>
