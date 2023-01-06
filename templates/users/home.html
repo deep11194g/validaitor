@@ -1,0 +1,17 @@
+<head>
+    <title>Home</title>
+</head>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <br><br><h3>Hello, {{ user.username|default:'Guest User' }}! </h3>
+    <br><br>
+    {% if user.is_authenticated %}
+        Following functionalities are available for you:
+        <br><a href="{% url 'pred_model_upload' %}">Upload a new (trained) model</a>
+        <br><a href="{% url 'pred_models_list' %}">List all your models</a>
+    {% else %}
+        <i>Please register/log-in to use our functionalities !!!</i>
+    {% endif %}
+{% endblock %}

@@ -9,7 +9,21 @@
 </style>
 
 <div style="text-align: center;">
-    <h1>ValidAItor's Model Validation Platform</h1>
+    <div style="text-align: center;">
+        <h1><a href="{% url 'home' %}">ValidAItor's Model Validation Platform</a></h1>
+        <h>Our platform allows you to test and validate your prediction models !!</h>
+        <HR>
+    </div>
+</div>
+
+<br><br>
+<div style="float: right;">
+    {% if user.is_authenticated %}
+        <br><a href="{% url 'logout' %}">Logout</a>
+        <br><a href="{% url 'password_change' %}">Change password</a>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+    {% endif %}
 </div>
 
 {% block content %}

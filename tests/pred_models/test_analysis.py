@@ -1,3 +1,4 @@
+import os.path
 import unittest
 
 import numpy as np
@@ -37,6 +38,29 @@ class TestAnalysis(unittest.TestCase):
         self.assertIsInstance(labels, list)
         self.assertIsInstance(labels[0], str)
         self.assertEqual(len(labels), len(X_train[0]))
+
+    def test_load(self):
+        analyser = PerformanceStatsAnalyser(pred_model_obj=self.pred_model)
+        self.assertIsNone(analyser.X_test)
+        self.assertIsNone(analyser.X_train)
+        self.assertIsNone(analyser.y_test)
+        self.assertIsNone(analyser.y_test)
+        self.assertIsNone(analyser.loaded_clf)
+        analyser.load()
+        self.assertIsNotNone(analyser.X_test)
+        self.assertIsNotNone(analyser.X_train)
+        self.assertIsNotNone(analyser.y_test)
+        self.assertIsNotNone(analyser.y_test)
+        self.assertIsNotNone(analyser.loaded_clf)
+
+    def test__test_performance(self):
+        analyser = PerformanceStatsAnalyser(pred_model_obj=self.pred_model)
+        analyser.load()
+        analyser.test_performance()
+        self.assertIsNotNone(analyser.pred_model_obj.confusion_matrix)
+        self.assertTrue(os.path.exists(analyser.pred_model_obj.confusion_matrix.path))
+        self.assertIsNotNone(analyser.pred_model_obj.classification_report)
+        self.assertIsInstance(analyser.pred_model_obj.classification_report, str)
 
 
 if __name__ == '__main__':

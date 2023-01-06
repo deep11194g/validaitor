@@ -1,14 +1,15 @@
-from django.conf.urls import url
 from django.urls import include, path
-from django.contrib import admin
-
 from django.conf import settings
 from django.conf.urls.static import static
 
+from users.views import home, register
+
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
-    url(r"^", include("users.urls")),
+    path('', home, name="home"),
+    path('accounts/', include("django.contrib.auth.urls")),
+    path('register/', register, name="register"),
     path('pred_models/', include('pred_models.urls')),
+
 ]
 
 if settings.DEBUG:

@@ -6,57 +6,53 @@
 
 {% block content %}
     <h2>Pred Model Details for ID: {{ pred_model_id }}</h2>
+
+    {% if message %}
+        <p style="color:{{ message.color }}"><i>{{ message.text }}</i></p>
+    {% endif %}
+
     {% if pred_model %}
         <ul>
             <li>Name: {{ pred_model.name }}</li>
             <li>Description: {{ pred_model.description }}</li>
-
         </ul>
 
         {% if pred_model.confusion_matrix %}
-            <br><br>
             <h4>Confusion Matrix</h4>
             <img src="{{ pred_model.confusion_matrix.url }}" alt="cf">
         {% endif %}
 
         {% if pred_model.roc_plot %}
-            <br><br>
             <h4>ROC Curve</h4>
             <img src="{{ pred_model.roc_plot.url }}" alt="roc">
         {% endif %}
 
         {% if pred_model.prc_plot %}
-            <br><br>
             <h4>Precision Recall Curve</h4>
             <img src="{{ pred_model.prc_plot.url }}" alt="prc">
         {% endif %}
 
         {% if pred_model.classification_report %}
-            <br><br>
             <h4>Classification Report</h4>
             <pre>{{ pred_model.classification_report }}</pre>
         {% endif %}
 
         {% if pred_model.feature_importance_plot %}
-            <br><br>
             <h4>Feature Importance Plot</h4>
             <img src="{{ pred_model.feature_importance_plot.url }}" alt="fi">
         {% endif %}
 
         {% if pred_model.best_feature_box_plot %}
-            <br><br>
             <h4>Best feature Boxplot (Descp. Stats)</h4>
             <img src="{{ pred_model.best_feature_box_plot.url }}" alt="bp">
         {% endif %}
 
-        {% if message %}
-            <h3><i>{{ message }}</i></h3>
-        {% endif %}
 
     {% else %}
         <p>Either model with ID: {{ pred_model_id }} doesnt exist or doesnt belong to you !!</p>
     {% endif %}
 
-    <br><a href="{% url 'pred_model_upload' %}">Upload a model</a>
-    <br><a href="{% url 'dashboard' %}">Back to dashboard</a>
+    <br><a href="{% url 'pred_model_upload' %}">Upload a new model</a>
+    <br><a href="{% url 'pred_models_list' %}">Back to model list</a>
+    <br><a href="{% url 'home' %}">Back to home</a>
 {% endblock %}

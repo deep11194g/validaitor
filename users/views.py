@@ -5,8 +5,8 @@ from django.urls import reverse
 from users.forms import CustomUserCreationForm
 
 
-def dashboard(request):
-    return render(request, "users/dashboard.html")
+def home(request):
+    return render(request, "users/home.html")
 
 
 def register(request):
@@ -20,4 +20,4 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect(reverse("dashboard"))
+            return redirect(reverse("home"))

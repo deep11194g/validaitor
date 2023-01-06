@@ -11,5 +11,9 @@
         <button type="submit">Upload</button>
     </form>
 
-    <p><a href="{% url 'dashboard' %}">Return to dashboard</a></p>
+    {% if message %}
+        <p style="color:{{ message.color }}"><i>{{ message.text }}</i></p>
+    {% endif %}
+
+    <p><a href="{% url 'home' %}">Return to home</a></p>
 {% endblock %}

@@ -16,7 +16,6 @@ Assumption:
 - Prediction is a classification problem
 - Predicted Label is always the last row
 - Predicted label is 2-class
-- All datapoints are numerical in nature
 - First two columns are row identifiers (ignored as feature)
 """
 
@@ -40,7 +39,7 @@ def csv_to_dataset(csv_file_path):
                 y.append(int(row[-1]))
                 feature_vals = []
                 for cell in row[1:-1]:
-                    feature_vals.append(float(cell))
+                    feature_vals.append(cell)
                 X.append(feature_vals)
             except TypeError:
                 continue
@@ -55,7 +54,8 @@ class PerformanceStatsAnalyser:
         self.X_test = None
         self.y_train = None
         self.y_test = None
-        self.feature_labels = None
+        self.feature_labels = []
+        self.feature_imp_map = {}
 
     def load(self):
         """
@@ -65,13 +65,23 @@ class PerformanceStatsAnalyser:
         self.X_test, self.y_test, self.feature_labels = csv_to_dataset(self.pred_model_obj.test_set.path)
         self.X_train, self.y_train, _ = csv_to_dataset(self.pred_model_obj.train_set.path)
 
-    def performance(self):
+    def test_performance(self):
         """
         Compute and store model's performance stats
         """
         y_pred = self.loaded_clf.predict(self.X_test)
+        # Generate metrics
+        self._generate_confusion_matrix(y_pred)
+        self._generate_classification_report(y_pred)
+        self._generate_prc_plot()
+        self._generate_roc_plot()
+        self._generate_feature_importance_plot()
+        # self._best_feature_box_plot()
+        # Update report in database entry
+        self.pred_model_obj.save()
 
-        # Confusion Matrix
+    def _generate_confusion_matrix(self, y_pred):
+        """2x2 Confusion Matrix"""
         cf = confusion_matrix(y_true=self.y_test, y_pred=y_pred, normalize='true')
         disp = ConfusionMatrixDisplay(confusion_matrix=cf)
         disp.plot(cmap='Blues')
@@ -81,9 +91,11 @@ class PerformanceStatsAnalyser:
         self.pred_model_obj.confusion_matrix = plt_path
         plt.close()
 
-        # Classification Report
+    def _generate_classification_report(self, y_pred):
+        """Classification Report"""
         self.pred_model_obj.classification_report = classification_report(self.y_test, y_pred, digits=3)
 
+    def _generate_prc_plot(self):
         # PRC Plot
         plot_precision_recall_curve(self.loaded_clf, self.X_test, self.y_test, name=self.pred_model_obj.name)
         plt.ylim(0, 1)
@@ -92,7 +104,8 @@ class PerformanceStatsAnalyser:
         self.pred_model_obj.prc_plot = plt_path
         plt.close()
 
-        # ROC Plot
+    def _generate_roc_plot(self):
+        """ROC Plot"""
         plot_roc_curve(self.loaded_clf, self.X_test, self.y_test, name=self.pred_model_obj.name)
         plt.ylim(0, 1)
         plt_path = "{}.png".format(get_folder_path(self.pred_model_obj, 'roc_plot'))
@@ -100,12 +113,12 @@ class PerformanceStatsAnalyser:
         self.pred_model_obj.roc_plot = plt_path
         plt.close()
 
-        # Top 5 important features
+    def _generate_feature_importance_plot(self):
+        """Top N (=5) important features"""
         top_n = 5
-        feature_imp_map = {}
         for idx, name in enumerate(self.feature_labels):
-            feature_imp_map[name] = self.loaded_clf.feature_importances_[idx]
-        feature_imp_map = {k: v for k, v in sorted(feature_imp_map.items(), key=lambda item: item[1], reverse=True)}
+            self.feature_imp_map[name] = self.loaded_clf.feature_importances_[idx]
+        feature_imp_map = {k: v for k, v in sorted(self.feature_imp_map.items(), key=lambda item: item[1], reverse=True)}
         plt.bar(range(top_n), list(feature_imp_map.values())[:top_n])
         plt.xticks(range(top_n), list(feature_imp_map.keys())[:top_n], rotation='vertical')
         plt.title('Top {} Features'.format(top_n))
@@ -117,8 +130,9 @@ class PerformanceStatsAnalyser:
         self.pred_model_obj.feature_importance_plot = plt_path
         plt.close()
 
-        # Best feature boxplot
-        top_feature_label = list(feature_imp_map.keys())[0]
+    def _best_feature_box_plot(self):
+        """Best feature boxplot (sensible for numerical data"""
+        top_feature_label = list(self.feature_imp_map.keys())[0]
         top_feature_idx = self.feature_labels.index(top_feature_label)
         values_0 = []
         values_1 = []
@@ -139,6 +153,3 @@ class PerformanceStatsAnalyser:
         plt.savefig(settings.MEDIA_ROOT + '/' + plt_path)
         self.pred_model_obj.best_feature_box_plot = plt_path
         plt.close()
-
-        # Update report in database entry
-        self.pred_model_obj.save()
