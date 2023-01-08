@@ -9,7 +9,7 @@ from pred_models.forms import PredModelForm
 from pred_models.models import PredModel, get_folder_path
 from pred_models.analysis import PerformanceStatsAnalyser
 
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 
 
 @login_required(login_url='login')
@@ -127,16 +127,13 @@ def download_report(request, pred_model_id):
                 'message': message
             }
         )
-
     # Generate PDF and store in the directory as other model files
     pdf = FPDF()
-    for image_file in [pred_model.confusion_matrix.path, pred_model.classification_report.partition(),
-                       pred_model.roc_plot.path, pred_model.prc_plot.path]:
+    for image_file in [pred_model.confusion_matrix.path, pred_model.roc_plot.path, pred_model.prc_plot.path,
+                       pred_model.feature_importance_plot.path]:
         pdf.add_page()
         pdf.image(image_file)
-    pdf_store_path = settings.MEDIA_ROOT + '/'+ get_folder_path(pred_model, 'performance_report.pdf')
+    pdf_store_path = settings.MEDIA_ROOT + '/' + get_folder_path(pred_model, 'performance_report.pdf')
     pdf.output(pdf_store_path, "F")
 
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(pdf_store_path)
-    return response
+    return FileResponse(open(pdf_store_path, 'rb'), content_type='application/pdf', as_attachment=True)

@@ -96,7 +96,7 @@ class PerformanceStatsAnalyser:
         self.pred_model_obj.classification_report = classification_report(self.y_test, y_pred, digits=3)
 
     def _generate_prc_plot(self):
-        # PRC Plot
+        """PRC Plot"""
         plot_precision_recall_curve(self.loaded_clf, self.X_test, self.y_test, name=self.pred_model_obj.name)
         plt.ylim(0, 1)
         plt_path = "{}.png".format(get_folder_path(self.pred_model_obj, 'prc_plot'))
@@ -131,7 +131,7 @@ class PerformanceStatsAnalyser:
         plt.close()
 
     def _best_feature_box_plot(self):
-        """Best feature boxplot (sensible for numerical data"""
+        """Best feature boxplot (sensible for numerical data)"""
         top_feature_label = list(self.feature_imp_map.keys())[0]
         top_feature_idx = self.feature_labels.index(top_feature_label)
         values_0 = []
